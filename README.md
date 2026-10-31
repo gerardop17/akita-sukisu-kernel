@@ -1,3 +1,35 @@
+# GKI SukiSU-Ultra + SUSFS カーネルビルド
+
+ShirkNeko 氏の汎用 GKI ビルダー（fork）に、**Google Pixel 8a (akita) 専用ビルド**を追加したリポジトリです。
+
+> 🤖 **AI 製作について**
+> `akita_sukisu/` の構成と専用 GitHub Actions ワークフローは、AI エージェント **Muse** が作成しました（2026-10-31）。
+> frost-1256/android-kernels の akita 構成をベースに、カーネルバージョンの照合、SukiSU Ultra / SUSFS の最新コミットの確認、ワークフローへの移植とビルド起動までを AI が行っています。
+> ただしビルド成果物の安全性・起動可否は保証されません。**フラッシュは必ずバックアップを取った上で自己責任**でお願いします。
+
+## 📱 Pixel 8a (akita) 専用ビルド — `akita_sukisu/`
+
+| 項目 | 内容 |
+|---|---|
+| 対象端末 | Google Pixel 8a (`akita` / Tensor G3)、Android 16 系 |
+| カーネル | `android14-6.1-2025-09` = **6.1.145-android14-11**（実機で使用中のカーネルと同一ベース） |
+| SukiSU Ultra | `builtin` ブランチ `b16e899`（2026-10-29 時点の最新） |
+| SUSFS | `gki-android14-6.1` `ee155a1`（2026-10-29 時点の最新） |
+| KPM | off |
+| 成果物 | `boot.img` / `boot-avb.img` / AnyKernel3 zip / `Image`（Actions の artifact と Release に添付） |
+
+- 詳細・ビルド方法・書き込み手順・復旧方法: **[`akita_sukisu/README.md`](akita_sukisu/README.md)**
+- ビルドは GitHub Actions で全自動（ソース／ツールチェーンのダウンロードから Release 作成まで）
+- 実行状況と成果物: [Actions](https://github.com/mushroom1729-xperia/GKI_KernelSU_SUSFS/actions/workflows/build-akita-sukisu.yml) / [Releases](https://github.com/mushroom1729-xperia/GKI_KernelSU_SUSFS/releases)
+
+ベースとした構成: [frost-1256/android-kernels](https://github.com/frost-1256/android-kernels)（`akita-sukisu-5` のビルド元）
+
+---
+
+## 汎用 GKI ビルダー（upstream / fork 元）
+
+以下は fork 元の README です。汎用 GKI カーネルをビルドする場合はこちらを参照してください。
+
 # GKI SukiSU-Ultra + SUSFS 构建系统
 
 ### 这是一个自动构建 GKI 内核的仓库
