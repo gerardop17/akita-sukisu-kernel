@@ -17,17 +17,17 @@ on:
         required: true
         default: "builtin"
       sukisu_commit:
-        description: "SukiSU commit SHA (empty = pinned latest in workflow defaults)"
+        description: "SukiSU commit SHA (empty = pinned default in akita_sukisu/build.sh)"
         required: false
-        default: "b16e899a555e9b96aa1225f049cd7274820ca5b8"
+        default: ""
       susfs_ref:
         description: "susfs4ksu branch/tag"
         required: true
         default: "gki-android14-6.1"
       susfs_commit:
-        description: "SUSFS commit SHA (empty = pinned latest in workflow defaults)"
+        description: "SUSFS commit SHA (empty = pinned default in akita_sukisu/build.sh)"
         required: false
-        default: "ee155a1ad4219804a7c54cb39dd4fa1b5c2a3fa4"
+        default: ""
       kpm:
         description: "Enable KPM (may affect stability)"
         type: boolean
@@ -81,9 +81,9 @@ jobs:
         env:
           KERNEL_REF: ${{ inputs.kernel_ref || 'android14-6.1-2025-09' }}
           SUKISU_REF: ${{ inputs.sukisu_ref || 'builtin' }}
-          SUKISU_COMMIT: ${{ inputs.sukisu_commit || 'b16e899a555e9b96aa1225f049cd7274820ca5b8' }}
+          SUKISU_COMMIT: ${{ inputs.sukisu_commit }}
           SUSFS_REF: ${{ inputs.susfs_ref || 'gki-android14-6.1' }}
-          SUSFS_COMMIT: ${{ inputs.susfs_commit || 'ee155a1ad4219804a7c54cb39dd4fa1b5c2a3fa4' }}
+          SUSFS_COMMIT: ${{ inputs.susfs_commit }}
           KPM: ${{ inputs.kpm || 'false' }}
         run: |
           bash akita_sukisu/build.sh
@@ -107,8 +107,8 @@ jobs:
               --target "$GITHUB_SHA" \
               --title "Pixel 8a SukiSU Ultra + SUSFS (${GITHUB_RUN_NUMBER})" \
               --notes "Kernel: ${{ inputs.kernel_ref || 'android14-6.1-2025-09' }}
-          SukiSU: ${{ inputs.sukisu_ref || 'builtin' }} ${{ inputs.sukisu_commit || 'b16e899a555e9b96aa1225f049cd7274820ca5b8' }}
-          SUSFS: ${{ inputs.susfs_ref || 'gki-android14-6.1' }} ${{ inputs.susfs_commit || 'ee155a1ad4219804a7c54cb39dd4fa1b5c2a3fa4' }}
+          SukiSU: ${{ inputs.sukisu_ref || 'builtin' }} ${{ inputs.sukisu_commit || 'pinned in akita_sukisu/build.sh' }}
+          SUSFS: ${{ inputs.susfs_ref || 'gki-android14-6.1' }} ${{ inputs.susfs_commit || 'pinned in akita_sukisu/build.sh' }}
           KPM: ${{ inputs.kpm || 'false' }}
 
           Flash at your own risk. Unlocked bootloader required."
