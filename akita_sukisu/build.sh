@@ -11,12 +11,12 @@ KERNEL_REF="${KERNEL_REF:-android14-6.1-2025-09}"
 KERNEL_REPO="${KERNEL_REPO:-https://android.googlesource.com/kernel/common.git}"
 
 SUKISU_REF="${SUKISU_REF:-builtin}"
-SUKISU_COMMIT="${SUKISU_COMMIT:-b16e899a555e9b96aa1225f049cd7274820ca5b8}"
+SUKISU_COMMIT="${SUKISU_COMMIT:-1cfa57340590971cba7521ed536da8ebbedc5f0a}"
 SUKISU_SETUP_URL="${SUKISU_SETUP_URL:-https://raw.githubusercontent.com/SukiSU-Ultra/SukiSU-Ultra/main/kernel/setup.sh}"
 
 SUSFS_REPO="${SUSFS_REPO:-https://github.com/ShirkNeko/susfs4ksu.git}"
 SUSFS_REF="${SUSFS_REF:-gki-android14-6.1}"
-SUSFS_COMMIT="${SUSFS_COMMIT:-ee155a1ad4219804a7c54cb39dd4fa1b5c2a3fa4}"
+SUSFS_COMMIT="${SUSFS_COMMIT:-a0ac906915c8a8d50d474dfb3cae478ef32edc1a}"
 SUSFS_PATCH_NAME="${SUSFS_PATCH_NAME:-50_add_susfs_in_gki-android14-6.1.patch}"
 
 KPM="${KPM:-false}"
@@ -172,6 +172,7 @@ for opt in \
   CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y \
   CONFIG_KSU_SUSFS_OPEN_REDIRECT=y \
   CONFIG_KSU_SUSFS_SUS_MAP=y \
+  CONFIG_KSU_SUSFS_PRIORITY_UID_FILTER=y \
   CONFIG_TMPFS_XATTR=y \
   CONFIG_TMPFS_POSIX_ACL=y \
   CONFIG_LTO_CLANG_THIN=y
