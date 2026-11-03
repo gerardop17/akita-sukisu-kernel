@@ -134,6 +134,16 @@ if find "$KERNEL_DIR" -name '*.rej' -print -quit | grep -q .; then
   die "SUSFS patch left rejected hunks"
 fi
 
+# Fix SUSFS/SukiSU-Ultra compat: mark unused cred-switching helpers
+# so -Werror,-Wunused-function does not break the build.
+if grep -q 'susfs_switch_to_ksu_domain' "$KERNEL_DIR/fs/susfs.c" 2>/dev/null; then
+  sed -i 's/^static struct cred \*susfs_switch_to_ksu_domain/static __maybe_unused struct cred *susfs_switch_to_ksu_domain/' \
+    "$KERNEL_DIR/fs/susfs.c"
+  sed -i 's/^static void susfs_restore_creds/static __maybe_unused void susfs_restore_creds/' \
+    "$KERNEL_DIR/fs/susfs.c"
+  log "Patched fs/susfs.c: marked unused cred helpers __maybe_unused"
+fi
+
 # SUSFS requires this for vendor Wi-Fi modules on 6.1 GKI.
 rm -f "$KERNEL_DIR"/android/abi_gki_protected_exports_*
 
@@ -172,7 +182,6 @@ for opt in \
   CONFIG_KSU_SUSFS_SPOOF_CMDLINE_OR_BOOTCONFIG=y \
   CONFIG_KSU_SUSFS_OPEN_REDIRECT=y \
   CONFIG_KSU_SUSFS_SUS_MAP=y \
-  CONFIG_KSU_SUSFS_PRIORITY_UID_FILTER=y \
   CONFIG_TMPFS_XATTR=y \
   CONFIG_TMPFS_POSIX_ACL=y \
   CONFIG_LTO_CLANG_THIN=y
