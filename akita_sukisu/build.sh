@@ -144,13 +144,18 @@ if grep -q 'susfs_switch_to_ksu_domain' "$KERNEL_DIR/fs/susfs.c" 2>/dev/null; th
   log "Patched fs/susfs.c: marked unused cred helpers __maybe_unused"
 fi
 
-# Fix SukiSU/SUSFS compat: pkg_observer.c and dispatch.c call SUSFS
-# priority_uid_filter functions without including <linux/susfs.h>.
-# Insert the include right before the manager/ block in ksu_main.c.
+# Fix SukiSU/SUSFS compat: pkg_observer.c and dispatch.c call
+# susfs_parse_priority_app_strings() / susfs_set_priority_uid_filter()
+# which are declared in <linux/susfs.h> behind #ifdef CONFIG_KSU_SUSFS_PRIORITY_UID_FILTER.
+# The ifdef guard evaluates false in this unity-build context, so inject
+# unconditional forward declarations right before the manager/ block.
 KSU_MAIN="$KERNEL_DIR/drivers/kernelsu/ksu_main.c"
-if [[ -f "$KSU_MAIN" ]] && ! grep -q '#include <linux/susfs.h>' "$KSU_MAIN"; then
-  sed -i '/#include "manager\/apk_sign.c"/i #include <linux/susfs.h>' "$KSU_MAIN"
-  log "Patched ksu_main.c: added #include <linux/susfs.h> before manager/ block"
+if [[ -f "$KSU_MAIN" ]] && ! grep -q 'susfs_set_priority_uid_filter' "$KSU_MAIN"; then
+  sed -i '/#include "manager\/apk_sign.c"/i \
+/* Forward declarations for SUSFS priority_uid_filter (build fix) */\
+extern void susfs_parse_priority_app_strings(void);\
+extern void susfs_set_priority_uid_filter(void __user **user_info);' "$KSU_MAIN"
+  log "Patched ksu_main.c: added forward declarations for SUSFS priority_uid_filter functions"
 fi
 
 # SUSFS requires this for vendor Wi-Fi modules on 6.1 GKI.
