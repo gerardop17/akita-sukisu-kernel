@@ -146,16 +146,16 @@ fi
 
 # Fix SukiSU/SUSFS compat: pkg_observer.c and dispatch.c call
 # susfs_parse_priority_app_strings() / susfs_set_priority_uid_filter()
-# which are declared in <linux/susfs.h> behind #ifdef CONFIG_KSU_SUSFS_PRIORITY_UID_FILTER.
-# The ifdef guard evaluates false in this unity-build context, so inject
-# unconditional forward declarations right before the manager/ block.
+# but SUSFS Kconfig doesn't define CONFIG_KSU_SUSFS_PRIORITY_UID_FILTER,
+# so the implementations in susfs.c are compiled out. Inject stub functions
+# so the linker is satisfied.
 KSU_MAIN="$KERNEL_DIR/drivers/kernelsu/ksu_main.c"
 if [[ -f "$KSU_MAIN" ]] && ! grep -q 'susfs_set_priority_uid_filter' "$KSU_MAIN"; then
   sed -i '/#include "manager\/apk_sign.c"/i \
-/* Forward declarations for SUSFS priority_uid_filter (build fix) */\
-extern void susfs_parse_priority_app_strings(void);\
-extern void susfs_set_priority_uid_filter(void __user **user_info);' "$KSU_MAIN"
-  log "Patched ksu_main.c: added forward declarations for SUSFS priority_uid_filter functions"
+/* Stub functions for SUSFS priority_uid_filter (not in Kconfig) */\
+static inline void susfs_parse_priority_app_strings(void) {}\
+static inline void susfs_set_priority_uid_filter(void __user **user_info) {}' "$KSU_MAIN"
+  log "Patched ksu_main.c: added stub functions for SUSFS priority_uid_filter"
 fi
 
 # SUSFS requires this for vendor Wi-Fi modules on 6.1 GKI.
